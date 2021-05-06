@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    /* 
+      注意点:
+        1. 只要子类使用extends继承父类, 那么子类会自动继承父类所有的 [实例属性]和[原型方法]
+        2. 如果在constructor外 [设置属性并赋值], 则该属性名值对, 也会生效(不同之处: 在于属性值固定), 这类属性名值对也会被子类继承
+        3. 如果使用类似 eating=()=>{}方式定义方法, 是添加到实例上的方法, 会被子类继承
+        4. constructor函数也可以不写(根据实际需要), 不写就没有这样的属性
+        5. 子类中constructor不写时, 子类也会继承父类所有的属性和原型方法 (会自动添加)
+        6. 子类中如果写了constructor函数, 则要求必须调用super()函数, 并且是在第一行调用, 否则报错
+    */
+
+    class Person {
+      constructor(name, age) {
+        // 给实例添加属性
+        this.name = name;
+        this.age = age;
+      }
+      // 固定属性名值对 (属性值固定, 会被继承)
+      sex = 'male' 
+      
+
+      // 给原型添加方法
+      thinking() {
+        console.log(`${this.name}在思考...`);
+      }
+      // 使用这种方式定义的方法 (给实例添加方法) 方法可被继承
+      eating = ()=>{
+        console.log(`${this.name}在吃饭...`);
+      }
+
+    }
+
+    // Student类, 继承Person类
+    class Student extends Person {
+      constructor(name, age, score) {
+        // 继承父类属性
+        super(name, age); // Must call super constructor in derived
+        // 给实例添加独有属性
+        this.score = score;
+      }
+    }
+
+    const p1 = new Person('张飞', 30);
+    const s1 = new Student('关羽', 18, 100);
+    console.log(p1); //Person {name: "张飞", age: 30}
+    console.log(s1); //Student {name: "关羽", age: 18, score: 100}
+    p1.thinking(); //'张飞在思考'
+    s1.thinking(); //'关羽在思考'
+    console.log(s1.name); //'关羽'
+
+    p1.eating(); //'张飞在吃饭...'
+    s1.eating(); //'关羽在吃饭...'
+  </script>
+</body>
+
+</html>

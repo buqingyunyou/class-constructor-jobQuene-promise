@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <button id="btn">按钮</button>
+  <!-- 
+    (1) 传统js文件引入: 在html文件中, 通过<script>标签的src属性,引入js文件
+        1. 引入的js文件中的变量/常量, 和当前的所在的环境是一个环境 (全局环境)
+        2. 在当前环境, 可以拿到引入js文件中的变量和常量
+        3. 多个script标签引入多个js文件, 那么执行顺序就是一个一个script执行 (仅限于主线程代码)
+
+    (2) ES6新增js文件引入: 在js文件中引入另一个js文件(在html文件中, 在script标签内, 引入另一js文件):
+      实现:
+        1. import是全局方法
+        2. import调用返回一个promise对象
+        3. import引入js文件的同时, 会立即执行其中的代码
+        4. import引入的js文件中的变量/常量, 是局部, 在当前无法访问
+   -->
+
+  <script>
+    document.getElementById('btn').onclick = function(){
+      // 哪里需要调用执行, 在哪里引入
+      import('./demo.js').then(()=>{
+        console.log(111);
+      }).catch((err)=>{
+        console.log(err); //ReferenceError: err is not defined at demo.js:2
+      })
+    };
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<!-- 
+  注意:
+    1. 同步回调: 在主线程上执行
+    2. 异步回调: push到队列中, 等主线程代码执行完后, 排队执行
+
+ -->
+
+<body>
+  <script>
+    // 宏队列: []
+    // 微队列: []
+    // 主线程: 2 5 3 4 1
+
+    setTimeout(() => { 
+      console.log(1) //超时定时器时间满足, 触发回调, 将回调push到队列
+    }, 0)
+    new Promise((resolve) => {
+        console.log(2) //同步回调代码
+        resolve() //修改promise状态
+      })
+      .then(() => { //push到微队列  (当前then的promise对象状态为成功, 回调已经触发)
+        console.log(3) //then中回调函数如果没有return, 则返回一个新的成功的promise (要求代码执行完)
+      })
+      .then(() => { //执行then函数, 但不会对会触发回调  (当前then的promise状态为pending)
+        console.log(4) //一旦promise状态修改, 则将当前回调函数push到队列
+      })
+    console.log(5) //同步代码
+
+  </script>
+</body>
+
+</html>

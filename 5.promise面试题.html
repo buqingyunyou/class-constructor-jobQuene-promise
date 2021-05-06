@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // 宏队列: []
+    // 微队列: []
+    // 主线程: 3 2 5 4 1 6
+
+    setTimeout(() => { //定时器异步回调函数, 进入宏队列(因为时间已经到了,则事件函数已经触发,会先push到队列)
+        console.log(1)
+        console.log(6)
+      }, 0)
+
+      Promise.resolve().then(() => { //promise.then异步回调, 进入微队列 (因为promise状态已经修改)
+        console.log(2)
+        console.log(5)
+      })
+
+      Promise.resolve().then(() => { //promise.then异步回调, 进入微队列
+        console.log(4)
+      })
+      console.log(3) //主线程代码 
+  </script>
+</body>
+
+</html>

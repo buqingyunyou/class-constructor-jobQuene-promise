@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    /* 
+      宏队列: [宏任务1, 宏任务2,...]
+      微队列: [微任务1,微任务2,...]
+      规则:
+        [每次] 要执行宏队列中的任务前, 先去微队列的是否有待执行的微任务
+        1. 如果有, 则先执行微任务
+        2. 如果没有, 则按照宏任务中任务的顺序, 依次执行
+    */
+    {
+      // 练习一: 
+
+      // 调用setTimeout, 因为时间为0, 则其异步回调函数, push到宏队列
+      // setTimeout(() => {
+      //   console.log('setTimeout callback')  //(4)
+      // }, 0)
+
+      // // promise状态修改为成功, 然后调用then函数, 其异步回调函数, push到微队列
+      // Promise.resolve(1).then((value) => console.log('onResolved1', value)) //(2)
+      // // 此promise状态修改为成功, 然后调用then函数, 则其异步回调函数, push到微队列中
+      // Promise.resolve(2).then((value) => console.log('onResolved2', value)) //(3)
+
+      // // 主线程代码 (先执行)
+      // console.log('主线程') //(1)
+    }
+
+    {
+      // 练习二:
+
+      // 参数是异步回调函数
+      // setTimeout(() => { //定时器宏任务
+      //   console.log('setTimeout callback1') //(4)
+      // })
+      // setTimeout(() => { //定时器宏任务
+      //   console.log('setTimeout callback2') //(5)
+      // })
+
+      // // 参数是异步回调函数
+      // // promise.then的回调是微任务
+      // Promise.resolve(1).then((value) => console.log('onResolved1', value)) //(2)
+      // Promise.resolve(2).then((value) => console.log('onResolved2', value)) //(3)
+
+      // // 主线程代码
+      // console.log('主线程') //(1)
+
+    }
+
+    {
+      // 练习三:
+      setTimeout(() => { //定时器回调函数, 整体push到宏队列
+        console.log('setTimeout callback1') //(3)
+        Promise.resolve(5).then((value) => console.log('onResolved5')) //(4)
+      })
+      setTimeout(() => { //push到宏队列
+        console.log('setTimeout callback2') //(5)
+      })
+
+      Promise.resolve(3).then((value) => console.log('onResolved3')) //push到微队列 (1)
+      Promise.resolve(4).then((value) => console.log('onResolved4')) //push到微队列 (2)
+
+    }
+
+  </script>
+</body>
+
+</html>

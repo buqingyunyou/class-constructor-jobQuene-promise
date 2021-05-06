@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // 宏队列: [0]
+    // 微队列: []
+    // 主线程: 1 7 2 3 8 4 6 5 0
+    setTimeout(() => {  //定时器时间满足, 触发回调, push到宏队列
+      console.log('0')
+    }, 0)
+
+    new Promise((resolve, reject) => {
+        console.log('1') //同步回调代码
+        resolve() //修改当前promise对象状态
+      })
+      .then(() => {
+        console.log('2') //因为promise对象状态已经修改, 触发异步回调, push到微队列
+        new Promise((resolve, reject) => {
+            console.log('3') //执行完2 ,就直接执行3, 因为是同步回调代码
+            resolve() //修改promise对象
+          })
+          .then(() => { //触发回调, push到微队列
+            console.log('4') //当前then函数一旦执行完, 则返回promise成功
+          })
+          .then(() => { //因为promise状态没变, 只是调用then, 回调不会push
+            console.log('5') //当前promise状态修改, push到微队列
+          }) //一旦当前then回调函数代码全部执行完, 则返回的promise对象状态修改为成功
+      })
+      .then(() => { //因为当前promise状态依然是pending, 仅调用then方法, 不会触发回调
+        console.log('6') //promise状态修改为成功, 回调触发, push到微队列
+      })
+
+    new Promise((resolve, reject) => {
+      console.log('7') //同步回调代码
+      resolve() //修改promise状态
+    }).then(() => {
+      console.log('8') //因为当前promise状态已经修改, 回调触发, push到微队列
+    })
+
+
+  </script>
+</body>
+
+</html>

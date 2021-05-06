@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    /* 
+				宏:[]
+				微:[]
+        控制台：1 7 2 3 8 4 6 5 0
+
+			*/
+    setTimeout(() => {
+      console.log('0') 
+    }, 0)
+
+    new Promise((resolve, reject) => {
+        console.log('1') 
+        resolve() //promise状态修改了
+      })
+      .then(() => {  //promise对象状态修改, 那么就将then的回调函数放入任务队列
+        console.log('2') 
+        // return 1;
+        new Promise((resolve, reject) => {
+            console.log('3') 
+            resolve() 
+          })
+          .then(() => {
+            console.log('4') //
+          })
+          .then(() => {
+            console.log('5') 
+          }) //一旦then回调函数执行到此处, 则promise状态修改为成功
+      })
+      .then(() => { //此时的promise状态时pending, 所以then的回调函数不会进入队列
+        console.log('6') 
+      })
+
+    new Promise((resolve, reject) => {
+      console.log('7') 
+      resolve()
+    }).then(() => {
+      console.log('8') 
+    })
+  </script>
+</body>
+
+</html>

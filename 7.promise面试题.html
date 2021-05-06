@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // 宏队列: [5]
+    // 微队列: []
+    // 主线程: 3 7 4 1 2 5
+
+
+    // 定义一个函数first
+    const first = () => {
+      // return时, 会先执行return后面的代码
+      return new Promise((resolve, reject) => {
+        console.log(3) //同步回调代码
+        let p = new Promise((resolve, reject) => {
+          console.log(7) //同步回调代码
+          setTimeout(() => { //定时器时间满足, 将异步回调push到宏队列
+            console.log(5)
+            resolve(6)
+          }, 0)
+          resolve(1) //修改当前promise对象为成功
+        })
+        resolve(2) //修改promise对象为成功
+        p.then((arg) => {  //因为promise状态已经修改, 则将此异步回调push到微队列
+          console.log(arg)
+        })
+      })
+    }
+
+    // 调用first(), 进入函数体开始执行
+    first().then((arg) => { //因为promise状态已经修改, 则将此异步回调push到微队列
+      console.log(arg)
+    })
+
+    console.log(4) //同步代码
+
+  </script>
+</body>
+
+</html>
